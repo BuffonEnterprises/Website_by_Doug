@@ -7,7 +7,7 @@ llm:
   model: "claude-fable-5"          # cérebro: Claude Fable 5 (1M contexto, 128K saída)
   heavy_model: "claude-fable-5"
   max_tokens: 2048
-  temperature: 0.3
+  # temperature: 0.3      # Fable 5 rejeita temperature; deixe comentado/null p/ omitir
 
 timezone: "America/Sao_Paulo"
 

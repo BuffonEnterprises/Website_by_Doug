@@ -67,7 +67,9 @@ class Brain:
         llm = self.cfg["llm"]
         self.model = llm["model"]
         self.max_tokens = int(llm["max_tokens"])
-        self.temperature = float(llm["temperature"])
+        # temperature é omitida quando None — alguns modelos (ex.: Fable 5) a rejeitam.
+        _t = llm.get("temperature")
+        self.temperature = float(_t) if _t is not None else None
         self.max_iters = int(self.cfg["agent"]["max_tool_iterations"])
         self.history_turns = int(self.cfg["agent"].get("history_turns", 20))
         self.router = getattr(ctx, "router", None)
@@ -166,12 +168,14 @@ class Brain:
 
             async def do_stream():
                 chunker = SentenceChunker()   # fresco a cada tentativa (retry seguro)
-                async with self.client.messages.stream(
+                kwargs = dict(
                     model=model, max_tokens=self.max_tokens,
-                    temperature=self.temperature,
                     system=self._system(extra, system_override),
                     tools=registry.api_tools(), messages=conv,
-                ) as stream:
+                )
+                if self.temperature is not None:
+                    kwargs["temperature"] = self.temperature
+                async with self.client.messages.stream(**kwargs) as stream:
                     async for event in stream:
                         if (event.type == "content_block_delta"
                                 and getattr(event.delta, "type", None) == "text_delta"):

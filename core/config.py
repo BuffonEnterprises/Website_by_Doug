@@ -13,7 +13,7 @@ DEFAULTS: dict = {
         "model": "claude-fable-5",        # Claude Fable 5 (1M contexto, 128K saída)
         "heavy_model": "claude-fable-5",
         "max_tokens": 2048,
-        "temperature": 0.3,
+        "temperature": None,   # None = omite o parâmetro (Fable 5 rejeita temperature)
     },
     "timezone": "America/Sao_Paulo",
     "voice": {
