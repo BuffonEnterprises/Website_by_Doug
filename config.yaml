@@ -1,0 +1,83 @@
+# ════════════════════════════════════════════════════════════════
+#  Jarvis v2 — configuração
+#  Só o que você declarar aqui sobrepõe os defaults (core/config.py).
+# ════════════════════════════════════════════════════════════════
+
+llm:
+  model: "claude-fable-5"          # cérebro: Claude Fable 5 (1M contexto, 128K saída)
+  heavy_model: "claude-fable-5"
+  max_tokens: 2048
+  temperature: 0.3
+
+timezone: "America/Sao_Paulo"
+
+voice:
+  input: "auto"                    # auto | wake | ptt | text
+  wake:
+    model: "hey_jarvis"            # openWakeWord ("hey jarvis")
+    threshold: 0.55
+  stt:
+    engine: "auto"                 # auto (faster-whisper) | whisper
+    model: "small"                 # tiny|base|small|medium|large-v3
+    language: "pt"
+  tts:
+    engine: "say"                  # say (macOS) | elevenlabs | openai | none
+    voice: "Luciana"               # voz pt-BR do macOS (say -v '?')
+    rate: 190
+    stream_sentences: true
+    # elevenlabs_voice_id: "xxxx"  # requer ELEVENLABS_API_KEY no .env
+    # openai_voice: "alloy"        # requer OPENAI_API_KEY no .env
+
+safety:
+  # always_confirm | safe_confirm | autonomous | yolo
+  mode: "safe_confirm"
+  kill_phrases: ["para tudo", "pare tudo", "aborta tudo"]
+
+memory:
+  db_path: "memory/jarvis.db"
+  auto_recall: true                # injeta memórias relevantes antes de responder
+  embeddings:
+    enabled: true                  # busca semântica (fastembed, local, sem torch)
+    model: "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+
+agent:
+  max_tool_iterations: 16
+  workdir: "~"
+  history_turns: 20
+
+tasks:
+  max_concurrent: 3
+
+dashboard:
+  enabled: true
+  host: "127.0.0.1"
+  port: 8737
+  speak_replies: false             # falar em voz alta as respostas vindas do painel?
+
+# ── v3: inteligência + estado ──
+routing:
+  enabled: false                   # false = usa SEMPRE o Fable. true = roteia por complexidade.
+  fast_model: "claude-fable-5"
+
+state:
+  enabled: true                    # persiste a conversa + resumo rolante (contexto ~ilimitado)
+  db_path: "memory/state/sessions.db"
+  session_id: "leo-main"
+
+knowledge:
+  db_path: "memory/state/knowledge.db"   # base RAG dos seus arquivos (knowledge_index/search)
+
+logging:
+  level: "INFO"                    # DEBUG | INFO | WARNING
+  dir: "logs"
+
+# ── Conecte seus apps via MCP (opcional). Reaproveita servidores MCP locais. ──
+# Requer: pip install mcp
+mcp_servers: {}
+#   notion:
+#     command: "npx"
+#     args: ["-y", "@notionhq/notion-mcp-server"]
+#     env: { "NOTION_TOKEN": "secret_xxx" }
+#   filesystem:
+#     command: "npx"
+#     args: ["-y", "@modelcontextprotocol/server-filesystem", "/Users/leo"]

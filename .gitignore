@@ -1,0 +1,16 @@
+# segredos / ambiente
+.env
+
+# virtualenv
+.venv/
+venv/
+
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# runtime do Jarvis (gerado em execução)
+logs/
+memory/*.db
+memory/state/*.db
